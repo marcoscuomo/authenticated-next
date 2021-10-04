@@ -1,0 +1,41 @@
+.main {
+  background: #fff;
+  width: 700px;
+  height: 500px;
+
+  margin: 50px auto;
+  border-radius: 5px;
+  padding: 100px 0;
+}
+
+.main form {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.form {
+  width: 400px;
+  margin-bottom: 20px;
+  border: none;
+  background: rgb(233, 233, 233);
+  padding: 15px 10px;
+
+  font-size: 1.1rem;
+}
+
+.main form button {
+  width: 300px;
+  padding: 10px;
+  border: none;
+  background: lightgreen;
+  font-size: 1.1rem;
+  transition: all ease .5s;
+}
+
+.main form button:hover {
+  cursor: pointer;
+  background: rgb(106, 209, 106);
+}
