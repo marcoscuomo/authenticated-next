@@ -6,18 +6,22 @@ export default function handle(request: NextApiRequest, response: NextApiRespons
     return response.status(405).json({error: 'Method not allowed'})
   }
 
-  const {user, password} = request.body;
+  const {email, password} = request.body;
 
-  if(!user || !password) {
+  if(!email || !password) {
     return response.status(401).json({error: 'User and Password are required'});
   }
 
-  if(user !== 'admin' || password !== '123'){
+  if(email !== 'admin' || password !== '123'){
     return response.status(401).json({error: 'User or Password are incorrect'});
   }
 
   const token = '123456';
+  const user = {
+    name: 'Kevin Cuomo',
+    profile: 'administrator'
+  }
 
-  return response.json({token});
+  return response.json({token, user});
 
 }
