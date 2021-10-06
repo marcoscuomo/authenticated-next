@@ -1,6 +1,6 @@
-import { createContext, ReactNode, useState } from 'react';
+import { createContext, ReactNode, useEffect, useState } from 'react';
 import Router from 'next/router';
-
+import { setCookie, parseCookies } from 'nookies';
 
 import { api } from '../utils/api';
 
@@ -37,22 +37,41 @@ interface IResponseLogin {
 
 export function AuthProvider({ children }: IPropsAuthProvider) {
 
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
+
+  const isAuthenticated = !!user;
+
+  useEffect(() => {
+    const { 'authnext-token': token } = parseCookies();
+
+    if(token){
+      Router.push('/dashboard');
+    }
+  }, []);
 
   async function signIn({email, password}: ILoginData) {
     
-    const { data: { token, user } }: IResponseLogin = await api.post('login', {
-      email, 
-      password
-    });
+    try {
+      const { data: { token, user } }: IResponseLogin = await api.post('login', {
+        email, 
+        password
+      });
+  
+      if(token) {
 
-    // const { data: { token } } = await api.post('/authenticate');
+        setCookie(undefined, 'authnext-token', token, {
+          maxAge: 60 * 60 * 1, // 1 hour
+        });
+  
+        api.defaults.headers!['Authorization'] = `Bearer ${token}`;
 
-    if(token) {
-      setUser(user);
+        setUser(user);
+  
+        Router.push('/dashboard');
+      }
 
-      Router.push('/dashboard');
+    } catch(error) {
+      alert('User or Password is incorrect');
     }
   }
 
