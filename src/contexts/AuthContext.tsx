@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useEffect, useState } from 'react';
 import Router from 'next/router';
-import { setCookie, parseCookies } from 'nookies';
+import { setCookie, parseCookies, destroyCookie } from 'nookies';
 
 import { api } from '../utils/api';
 
@@ -23,7 +23,8 @@ interface ILoginData {
 interface IValueContext {
   isAuthenticated: boolean,
   user: User | null,
-  signIn: ({email, password}: ILoginData) => void
+  signIn: ({email, password}: ILoginData) => void,
+  logout: () => void
 }
 
 interface IResponseData {
@@ -46,6 +47,8 @@ export function AuthProvider({ children }: IPropsAuthProvider) {
 
     if(token){
       Router.push('/dashboard');
+    } else {
+      Router.push('/');
     }
   }, []);
 
@@ -75,11 +78,17 @@ export function AuthProvider({ children }: IPropsAuthProvider) {
     }
   }
 
+  async function logout() {
+    destroyCookie(undefined, 'authnext-token');
+    Router.push('/');
+  }
+
   return (
     <AuthContext.Provider value={{
       isAuthenticated,
       user,
-      signIn
+      signIn,
+      logout
     }}>
       {children}
     </AuthContext.Provider>
